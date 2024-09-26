@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>הערך מחיר רכב</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+            direction: rtl;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            padding: 20px;
+            direction: rtl;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            text-align: right;
+        }
+        input[type="text"],
+        input[list],
+        input[type="range"],
+        datalist,
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        input[type="text"]:focus,
+        input[list]:focus,
+        input[type="range"]:focus,
+        input[type="submit"]:focus {
+            border-color: #e9666d;
+            box-shadow: 0 0 8px rgba(102, 175, 233, 0.6);
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+        .highlight {
+            border: 2px solid red;
+        }
+        .slider-container {
+            display: flex;
+            align-items: center;
+        }
+        .slider-container input[type="text"] {
+            width: 20%;
+            margin-left: 10px;
+        }
+        #result {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.5em;
+            color: #333;
+            background-color: #e0e0e0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>הערך מחיר רכב</h1>
+        <form id="evaluationForm" method="post">
+
+            <label for="manufacturer">יצרן:</label>
+            <input list="manufacturers" id="manufacturer" name="manufacturer" placeholder="בחר יצרן" required>
+            <datalist id="manufacturers">
+                {% for manufacturer in manufacturers %}
+                    <option value="{{ manufacturer }}">
+                {% endfor %}
+            </datalist>
+
+            <label for="model">דגם:</label>
+            <input list="models" id="model" name="model" placeholder="בחר דגם" required disabled>
+            <datalist id="models"></datalist>
+
+            <label for="year">שנה:</label>
+            <div class="slider-container">
+                <input type="text" id="year" name="year" placeholder="בחר שנה" required>
+                <input type="range" id="yearRange" min="1980" max="2024">
+            </div>
+            <span id="yearError" class="error"></span>
+
+            <label for="hand">יד:</label>
+            <div class="slider-container">
+                <input type="text" id="hand" name="hand" placeholder="בחר יד" required>
+                <input type="range" id="handRange" min="1" max="10">
+            </div>
+            <span id="handError" class="error"></span>
+
+            <label for="gear">גיר:</label>
+            <input list="gears" id="gear" name="gear" placeholder="בחר גיר" required>
+            <datalist id="gears">
+                {% for gear in gears %}
+                    <option value="{{ gear }}">
+                {% endfor %}
+            </datalist>
+
+            <label for="capacity_engine">נפח מנוע:</label>
+            <div class="slider-container">
+                <input type="text" id="capacity_engine" name="capacity_engine" placeholder="בחר נפח מנוע" required>
+                <input type="range" id="capacityEngineRange" min="500" max="5000" step="50">
+            </div>
+            <span id="capacityEngineError" class="error"></span>
+
+            <label for="engine_type">סוג מנוע:</label>
+            <input list="engine_types" id="engine_type" name="engine_type" placeholder="בחר סוג מנוע" required>
+            <datalist id="engine_types">
+                {% for engine_type in engine_types %}
+                    <option value="{{ engine_type }}">
+                {% endfor %}
+            </datalist>
+
+            <label for="prev_ownership">בעלות קודמת:</label>
+            <input list="prev_ownerships" id="prev_ownership" name="prev_ownership" placeholder="בחר בעלות קודמת" required>
+            <datalist id="prev_ownerships">
+                {% for prev_ownership in prev_ownerships %}
+                    <option value="{{ prev_ownership }}">
+                {% endfor %}
+            </datalist>
+
+            <label for="curr_ownership">בעלות נוכחית:</label>
+            <input list="curr_ownerships" id="curr_ownership" name="curr_ownership" placeholder="בחר בעלות נוכחית" required>
+            <datalist id="curr_ownerships">
+                {% for curr_ownership in curr_ownerships %}
+                    <option value="{{ curr_ownership }}">
+                {% endfor %}
+            </datalist>
+
+            <label for="area">אזור:</label>
+            <input list="areas" id="area" name="area" placeholder="בחר אזור" required>
+            <datalist id="areas">
+                {% for area in areas %}
+                    <option value="{{ area }}">
+                {% endfor %}
+            </datalist>
+
+            <label for="city">עיר:</label>
+            <input list="cities" id="city" name="city" placeholder="בחר עיר" required disabled>
+            <datalist id="cities"></datalist>
+
+            <label for="color">צבע:</label>
+            <input list="colors" id="color" name="color" placeholder="בחר צבע" required>
+            <datalist id="colors">
+                {% for color in colors %}
+                    <option value="{{ color }}">
+                {% endfor %}
+            </datalist>
+
+            <label for="km">קילומטראז':</label>
+            <div class="slider-container">
+                <input type="text" id="km" name="km" placeholder="בחר קילומטראז'" required>
+                <input type="range" id="kmRange" min="0" max="500000" step="1000">
+            </div>
+            <span id="kmError" class="error"></span>
+
+            <input type="submit" value="הערך מחיר">
+        </form>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function syncTextInputWithRange(textInputId, rangeInputId) {
+            var textInput = document.getElementById(textInputId);
+            var rangeInput = document.getElementById(rangeInputId);
+
+            textInput.addEventListener('input', function() {
+                rangeInput.value = this.value;
+                this.style.boxShadow = '0 0 8px rgba(102, 175, 233, 0.6)';
+                this.style.borderColor = '#66afe9';
+            });
+
+            rangeInput.addEventListener('input', function() {
+                textInput.value = this.value;
+                textInput.style.boxShadow = '0 0 8px rgba(102, 175, 233, 0.6)';
+                textInput.style.borderColor = '#66afe9';
+            });
+        }
+
+        syncTextInputWithRange('year', 'yearRange');
+        syncTextInputWithRange('hand', 'handRange');
+        syncTextInputWithRange('capacity_engine', 'capacityEngineRange');
+        syncTextInputWithRange('km', 'kmRange');
+
+        document.getElementById('manufacturer').addEventListener('change', function() {
+            var manufacturer = this.value;
+            this.style.boxShadow = '0 0 8px rgba(102, 175, 233, 0.6)';
+            this.style.borderColor = '#66afe9';
+            if (manufacturer) {
+                fetch(`/get_models/${manufacturer}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        var modelInput = document.getElementById('model');
+                        var modelsDatalist = document.getElementById('models');
+                        modelsDatalist.innerHTML = '';
+                        data.forEach(function(model) {
+                            var option = document.createElement('option');
+                            option.value = model;
+                            modelsDatalist.appendChild(option);
+                        });
+                        modelInput.disabled = false;
+                    });
+            } else {
+                document.getElementById('model').disabled = true;
+                document.getElementById('models').innerHTML = '';
+            }
+        });
+
+        document.getElementById('area').addEventListener('change', function() {
+            var area = this.value;
+            this.style.boxShadow = '0 0 8px rgba(102, 175, 233, 0.6)';
+            this.style.borderColor = '#66afe9';
+            if (area) {
+                fetch(`/get_cities/${area}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        var cityInput = document.getElementById('city');
+                        var citiesDatalist = document.getElementById('cities');
+                        citiesDatalist.innerHTML = '';
+                        data.forEach(function(city) {
+                            var option = document.createElement('option');
+                            option.value = city;
+                            citiesDatalist.appendChild(option);
+                        });
+                        cityInput.disabled = false;
+                    });
+            } else {
+                document.getElementById('city').disabled = true;
+                document.getElementById('cities').innerHTML = '';
+            }
+        });
+
+        document.querySelectorAll('input[type="text"], input[list]').forEach(function(input) {
+            input.addEventListener('input', function() {
+                this.style.boxShadow = '0 0 8px rgba(102, 175, 233, 0.6)';
+                this.style.borderColor = '#66afe9';
+            });
+        });
+
+        document.getElementById('evaluationForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            var isValid = true;
+
+            var year = document.getElementById('year').value;
+            var hand = document.getElementById('hand').value;
+            var capacityEngine = document.getElementById('capacity_engine').value;
+            var km = document.getElementById('km').value;
+
+            // Validate year
+            if (!Number.isInteger(Number(year))) {
+                document.getElementById('yearError').innerText = 'אנא הכנס ערך מספרי תקין לשנה';
+                document.getElementById('year').classList.add('highlight');
+                isValid = false;
+            } else {
+                document.getElementById('yearError').innerText = '';
+                document.getElementById('year').classList.remove('highlight');
+            }
+
+            // Validate hand
+            if (!Number.isInteger(Number(hand))) {
+                document.getElementById('handError').innerText = 'אנא הכנס ערך מספרי תקין ליד';
+                document.getElementById('hand').classList.add('highlight');
+                isValid = false;
+            } else {
+                document.getElementById('handError').innerText = '';
+                document.getElementById('hand').classList.remove('highlight');
+            }
+
+            // Validate capacity engine
+            if (!Number.isInteger(Number(capacityEngine))) {
+                document.getElementById('capacityEngineError').innerText = 'אנא הכנס ערך מספרי תקין לנפח מנוע';
+                document.getElementById('capacity_engine').classList.add('highlight');
+                isValid = false;
+            } else {
+                document.getElementById('capacityEngineError').innerText = '';
+                document.getElementById('capacity_engine').classList.remove('highlight');
+            }
+
+            // Validate km (only integer)
+            if (!Number.isInteger(Number(km))) {
+                document.getElementById('kmError').innerText = 'אנא הכנס ערך מספרי תקין לקילומטראז';
+                document.getElementById('km').classList.add('highlight');
+                isValid = false;
+            } else {
+                document.getElementById('kmError').innerText = '';
+                document.getElementById('km').classList.remove('highlight');
+            }
+
+            if (isValid) {
+                var formData = new FormData(this);
+                fetch('/evaluate_price', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    var roundedPrice = Math.round(data.predicted_price);
+                    document.getElementById('result').innerHTML = 'המחיר המשוער הוא: ' + roundedPrice + ' ₪';
+                })
+                .catch(error => {
+                    document.getElementById('result').innerHTML = 'שגיאה: ' + error;
+                });
+            }
+        });
+    </script>
+</body>
+</html>
